@@ -143,10 +143,10 @@ Builds the dashboard's frame, the brand and the queue page.
 
 Success criteria:
 
-- [ ] `npx vitest run --root dashboard --coverage` passes, with tests for the queue page (counts, rows, status labels, empty and error states), the router and the API functions, using a stubbed `fetch`.
-- [ ] `npm run check:ts` passes: Prettier, ESLint, `tsc` in strict mode with no `any`, and coverage of at least 80%.
-- [ ] `playwright.config.ts` runs the backend on port 8001 with its own fresh database and the dashboard on port 5174, and the existing health test is replaced by a queue test: the page shows 25 claims, 25 waiting, and CLM-1001 opens its claim page.
-- [ ] In the browser with the Playwright MCP server: the queue shows all 25 claims with amounts like $1,350.00, the fonts are Instrument Sans and JetBrains Mono, and the page looks right in light and dark mode (screenshots of both).
+- [x] `npx vitest run --root dashboard --coverage` passes, with tests for the queue page (counts, rows, status labels, empty and error states), the router and the API functions, using a stubbed `fetch`.
+- [x] `npm run check:ts` passes: Prettier, ESLint, `tsc` in strict mode with no `any`, and coverage of at least 80%.
+- [x] `playwright.config.ts` runs the backend on port 8001 with its own fresh database and the dashboard on port 5174, and the existing health test is replaced by a queue test: the page shows 25 claims whose state counts add up to 25 (later tests change some claims, so all 25 waiting is checked in the browser below), and CLM-1001 links to its claim page.
+- [x] In the browser with the Playwright MCP server: after `npm run reset` the queue shows all 25 claims waiting, with amounts like $1,350.00, the fonts are Instrument Sans and JetBrains Mono, and the page looks right in light and dark mode (screenshots of both).
 
 ## Phase 5: The claim page and the instructions page
 
