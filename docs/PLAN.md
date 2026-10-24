@@ -121,15 +121,15 @@ Replaces the hello-world agent with the claims agent, and lets the dashboard and
 
 Success criteria:
 
-- [ ] `uv run pytest -q agent backend` passes. Using a stub model and the backend's `TestClient`, the tests cover:
-  - [ ] a full run on CLM-1001 that reads the claim, policy and history, records an approve of $420.00, pays it, and leaves the claim `decided` and paid, with each step recorded in order;
-  - [ ] a run that approves a $1,350.00 payout and then tries to pay it: the tool returns the backend's refusal, the claim stays `awaiting_sign_off`, and no payment is recorded;
-  - [ ] a run that ends without a decision, and one where the model raises: both leave an `error` step and the claim back in `waiting`;
-  - [ ] the system prompt is built from `GET /api/instructions` and `GET /api/policy-wording`;
-  - [ ] `run_claim` refuses a claim that isn't waiting with 409, and `run_queue` runs only waiting claims.
-- [ ] No file in `agent/` mentions `data/` (checked with a search), and the agent's only network calls are to the backend and OpenRouter.
-- [ ] Live check, with your OpenRouter key and a cost of a few cents: after `npm run reset` and with the backend running, `uv run -m agent CLM-1001` records a decision with a reason of two or three sentences and a policy section, and `GET /api/claims/CLM-1001/steps` lists the steps of the run.
-- [ ] `npm run check:python` passes with coverage of at least 80%.
+- [x] `uv run pytest -q agent backend` passes. Using a stub model and the backend's `TestClient`, the tests cover:
+  - [x] a full run on CLM-1001 that reads the claim, policy and history, records an approve of $420.00, pays it, and leaves the claim `decided` and paid, with each step recorded in order;
+  - [x] a run that approves a $1,350.00 payout and then tries to pay it: the tool returns the backend's refusal, the claim stays `awaiting_sign_off`, and no payment is recorded;
+  - [x] a run that ends without a decision, and one where the model raises: both leave an `error` step and the claim back in `waiting`;
+  - [x] the system prompt is built from `GET /api/instructions` and `GET /api/policy-wording`;
+  - [x] `run_claim` refuses a claim that isn't waiting with 409, and `run_queue` runs only waiting claims.
+- [x] No file in `agent/` mentions `data/` (checked with a search), and the agent's only network calls are to the backend and OpenRouter.
+- [x] Live check, with your OpenRouter key and a cost of a few cents: after `npm run reset` and with the backend running, `uv run -m agent CLM-1001` records a decision with a reason of two or three sentences and a policy section, and `GET /api/claims/CLM-1001/steps` lists the steps of the run.
+- [x] `npm run check:python` passes with coverage of at least 80%.
 
 ## Phase 4: The dashboard's queue
 

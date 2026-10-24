@@ -1,15 +1,18 @@
 """The UnderCover backend."""
 
 import json
+import logging
 import sqlite3
 from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated, Any
+from uuid import uuid4
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 
+from agent.main import run as run_agent
 from backend.db import connect, ensure_seeded, setting
 from backend.models import (
     AddOn,
@@ -33,6 +36,7 @@ from backend.models import (
 )
 
 INSTRUCTIONS = Path(__file__).resolve().parent / "instructions.md"
+logger = logging.getLogger("uvicorn.error")
 
 
 @asynccontextmanager
@@ -311,3 +315,33 @@ def release_claim(claim_id: str, db: Db) -> Claim:
     require_status(load_claim(db, claim_id), "in_progress")
     set_status(db, claim_id, "waiting")
     return load_claim(db, claim_id)
+
+
+def work_queue(claim_ids: list[str]) -> None:
+    """Run the agent on each claim in turn. A failed run has already been recorded
+    on its claim, so log it and go on to the next."""
+    for claim_id in claim_ids:
+        try:
+            run_agent(claim_id, str(uuid4()))
+        except Exception:
+            logger.exception("The agent's run on %s failed", claim_id)
+
+
+@app.post("/api/claims/{claim_id}/run", operation_id="run_claim")
+def run_claim(claim_id: str, background: BackgroundTasks, db: Db) -> Claim:
+    """Start the UnderCover Agent on a waiting claim."""
+    claim = load_claim(db, claim_id)
+    require_status(claim, "waiting")
+    background.add_task(work_queue, [claim_id])
+    return claim
+
+
+@app.post("/api/queue/run", operation_id="run_queue")
+def run_queue(background: BackgroundTasks, db: Db) -> list[str]:
+    """Start the UnderCover Agent on every waiting claim, one at a time."""
+    rows = db.execute(
+        "SELECT claim_id FROM claims WHERE status = 'waiting' ORDER BY position"
+    ).fetchall()
+    claim_ids = [row["claim_id"] for row in rows]
+    background.add_task(work_queue, claim_ids)
+    return claim_ids
