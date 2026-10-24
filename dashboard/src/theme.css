@@ -82,6 +82,18 @@ h3 {
   color: var(--muted);
 }
 
+h1.mono {
+  font-size: 28px;
+}
+
+h3.spaced {
+  margin-top: 20px;
+}
+
+.flush {
+  margin: 0;
+}
+
 .header {
   display: flex;
   align-items: baseline;

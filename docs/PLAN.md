@@ -155,7 +155,7 @@ Builds the pages where handlers read a claim, follow the agent and sign off.
 - `dashboard/src/pages/Claim.tsx`:
   - the claim: customer, policy and plan, dates, story, items and documents;
   - a "Run agent" button while the claim is waiting;
-  - the agent's steps, updated every second while the claim is in progress: what it's reading, the tools it calls and what it decided;
+  - the agent's steps, updated every second (also after the decision, since the agent pays and sums up after it decides): what it's reading, the tools it calls and what it decided;
   - the decision: approve, decline or refer, the payout, the working, the reason and the policy section;
   - the payment: paid with the amount and time, or waiting for sign-off;
   - for a claim awaiting sign-off, a sign-off panel where the handler picks their name and confirms, which records the sign-off and makes the payment.
@@ -163,14 +163,14 @@ Builds the pages where handlers read a claim, follow the agent and sign off.
 
 Success criteria:
 
-- [ ] Vitest tests for both pages pass: the claim in full; the run button only while waiting; steps appearing as polling returns them; each decision type; the payment and sign-off states; signing off sends the chosen handler; and the instructions page shows the text and has no way to edit it.
-- [ ] `npm run check:ts` passes with coverage of at least 80%.
-- [ ] Playwright tests pass, playing the agent's part through the API:
-  - [ ] after starting CLM-1001 and posting two steps, the claim page shows it in progress with both steps, and a third step appears without reloading;
-  - [ ] after recording an approve of $420.00 and paying it, the page shows the decision, its reason and section, and "Paid $420.00";
-  - [ ] for a claim approved at $1,350.00, the page shows it waiting for sign-off; signing off as Priya Raman shows it decided, signed off by Priya Raman and paid $1,350.00, and the queue's counts update;
-  - [ ] the instructions page shows the instructions and the policy wording.
-- [ ] In the browser with the Playwright MCP server, with the real agent on one waiting claim: clicking "Run agent" shows the steps arriving live, then the decision. Screenshots of the claim page in light and dark mode.
+- [x] Vitest tests for both pages pass: the claim in full; the run button only while waiting; steps appearing as polling returns them; each decision type; the payment and sign-off states; signing off sends the chosen handler; and the instructions page shows the text and has no way to edit it.
+- [x] `npm run check:ts` passes with coverage of at least 80%.
+- [x] Playwright tests pass, playing the agent's part through the API:
+  - [x] after starting CLM-1001 and posting two steps, the claim page shows it in progress with both steps, and a third step appears without reloading;
+  - [x] after recording an approve of $420.00 and paying it, the page shows the decision, its reason and section, and "Paid $420.00";
+  - [x] for a claim approved at $1,350.00, the page shows it waiting for sign-off; signing off as Priya Raman shows it decided, signed off by Priya Raman and paid $1,350.00, and the queue's counts update;
+  - [x] the instructions page shows the instructions and the policy wording.
+- [x] In the browser with the Playwright MCP server, with the real agent on one waiting claim: clicking "Run agent" shows the steps arriving live, then the decision. Screenshots of the claim page in light and dark mode.
 
 ## Phase 6: The whole pilot, end to end
 

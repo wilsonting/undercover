@@ -1,3 +1,5 @@
+import { ClaimPage } from "./pages/Claim";
+import { Instructions } from "./pages/Instructions";
 import { Queue } from "./pages/Queue";
 import { useRoute } from "./router";
 
@@ -27,7 +29,11 @@ export function App() {
         </nav>
       </header>
       <main>
-        <Queue />
+        {route.page === "queue" && <Queue />}
+        {route.page === "claim" && (
+          <ClaimPage key={route.claimId} claimId={route.claimId} />
+        )}
+        {route.page === "instructions" && <Instructions />}
       </main>
     </>
   );
