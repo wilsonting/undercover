@@ -181,8 +181,8 @@ Checks the pilot as a whole and brings the documents up to date.
 
 Success criteria:
 
-- [ ] `npm run check` passes: ruff, pyright, pytest, Prettier, ESLint, tsc, vitest and Playwright, with both coverage thresholds met.
-- [ ] `npm run reset` then `npm run dev` gives a dashboard at http://localhost:5173 with 25 waiting claims.
-- [ ] The five live runs each end `decided` or `awaiting_sign_off`, each with a reason of two or three sentences and a policy section, and none is paid over $1,000 without a sign-off.
-- [ ] `git grep -n "evals" backend agent dashboard` finds nothing that reads the answer key.
-- [ ] `docs/STATUS.md` describes the pilot as built, and every box in this plan is ticked.
+- [x] `npm run check` passes: ruff, pyright, pytest, Prettier, ESLint, tsc, vitest and Playwright, with both coverage thresholds met.
+- [x] `npm run reset` then `npm run dev` gives a dashboard at http://localhost:5173 with 25 waiting claims.
+- [x] The five live runs each end `decided` or `awaiting_sign_off`, each with a reason of two or three sentences and a policy section, and none is paid over $1,000 without a sign-off.
+- [x] `git grep -n "evals" backend agent dashboard` finds nothing that reads the answer key.
+- [x] `docs/STATUS.md` describes the pilot as built, and every box in this plan is ticked.
