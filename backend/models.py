@@ -153,3 +153,26 @@ class Instructions(BaseModel):
 class PolicyWording(BaseModel):
     version: str
     text: str
+
+
+class StartRequest(BaseModel):
+    thread_id: str
+
+
+class StepRequest(BaseModel):
+    thread_id: str
+    kind: StepKind
+    content: str
+
+
+class Step(StepRequest):
+    step_id: int
+    created_at: str
+
+
+class PaymentRequest(BaseModel):
+    amount: float = Field(gt=0)
+
+
+class SignOffRequest(BaseModel):
+    handler_id: str

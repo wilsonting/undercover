@@ -99,16 +99,16 @@ Routes:
 
 Success criteria:
 
-- [ ] `uv run pytest -q backend` passes, with a test for every transition and every refusal below.
-- [ ] Recording a decline or refer moves the claim to `decided` with a $0 payout; an approve of $420.00 moves it to `decided`.
-- [ ] An approve of $1,350.00 moves the claim to `awaiting_sign_off`.
-- [ ] Paying that $1,350.00 claim before sign-off returns 409 with a message that it needs a handler's sign-off, and no payment is recorded.
-- [ ] After `sign_off_claim` with `HND-01`, the claim is `decided`, shows Dana Whitfield as the handler who signed off, and has one payment of $1,350.00.
-- [ ] Paying a claim twice, paying a different amount from the approved payout, and paying a declined claim each return 409.
-- [ ] A decision with an unknown value, a negative payout, or a non-zero payout on a decline returns 422; a decision on a claim that isn't in progress returns 409.
-- [ ] Signing off a claim that isn't awaiting sign-off, or with an unknown handler, is refused.
-- [ ] With the backend running, the same flow works over HTTP with `curl` on CLM-1001 (start, step, decision, payment), and `GET /api/claims/CLM-1001` shows it `decided` and paid.
-- [ ] `npm run check:python` passes with coverage of at least 80%.
+- [x] `uv run pytest -q backend` passes, with a test for every transition and every refusal below.
+- [x] Recording a decline or refer moves the claim to `decided` with a $0 payout; an approve of $420.00 moves it to `decided`.
+- [x] An approve of $1,350.00 moves the claim to `awaiting_sign_off`.
+- [x] Paying that $1,350.00 claim before sign-off returns 409 with a message that it needs a handler's sign-off, and no payment is recorded.
+- [x] After `sign_off_claim` with `HND-01`, the claim is `decided`, shows Dana Whitfield as the handler who signed off, and has one payment of $1,350.00.
+- [x] Paying a claim twice, paying a different amount from the approved payout, and paying a declined claim each return 409.
+- [x] A decision with an unknown value, a negative payout, or a non-zero payout on a decline returns 422; a decision on a claim that isn't in progress returns 409.
+- [x] Signing off a claim that isn't awaiting sign-off, or with an unknown handler, is refused.
+- [x] With the backend running, the same flow works over HTTP with `curl` on CLM-1001 (start, step, decision, payment), and `GET /api/claims/CLM-1001` shows it `decided` and paid.
+- [x] `npm run check:python` passes with coverage of at least 80%.
 
 ## Phase 3: The UnderCover Agent
 

@@ -129,6 +129,10 @@ def test_every_operation_is_documented_with_no_optional_inputs(client):
             assert operation["description"].count("\n") == 0
             for parameter in operation.get("parameters", []):
                 assert parameter["required"]
-    for name, model in schema["components"]["schemas"].items():
-        if name.endswith("Request"):
-            assert set(model["required"]) == set(model["properties"])
+    schemas = schema["components"]["schemas"]
+    for path in schema["paths"].values():
+        for operation in path.values():
+            if "requestBody" in operation:
+                ref = operation["requestBody"]["content"]["application/json"]["schema"]
+                model = schemas[ref["$ref"].split("/")[-1]]
+                assert set(model["required"]) == set(model["properties"])
