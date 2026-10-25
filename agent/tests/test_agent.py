@@ -151,12 +151,49 @@ def test_the_command_line(monkeypatch, capsys):
     assert capsys.readouterr().out == "Decided CLM-1001\n"
 
 
-@pytest.mark.parametrize("args", [[], ["CLM-1001", "CLM-1002"]])
-def test_the_command_line_needs_one_claim_id(monkeypatch, args):
+def test_the_command_line_takes_one_claim_id_at_most(monkeypatch):
     monkeypatch.setattr(main, "run", lambda claim_id, thread_id: "Should not run")
-    monkeypatch.setattr("sys.argv", ["agent", *args])
-    with pytest.raises(SystemExit, match="Usage: uv run -m agent <claim id>"):
+    monkeypatch.setattr("sys.argv", ["agent", "CLM-1001", "CLM-1002"])
+    with pytest.raises(SystemExit, match=r"Usage: uv run -m agent \[claim id\]"):
         runpy.run_module("agent", run_name="__main__")
+
+
+def test_the_command_line_without_a_claim_id_works_the_queue(monkeypatch, capsys):
+    monkeypatch.setattr(main, "work_the_queue", lambda: print("Working the queue"))
+    monkeypatch.setattr("sys.argv", ["agent"])
+    runpy.run_module("agent", run_name="__main__")
+    assert capsys.readouterr().out == "Working the queue\n"
+
+
+def test_waiting_lists_only_waiting_claims_in_queue_order(backend):
+    backend.post(f"{CLAIM}/start", json={"thread_id": "t-1"})
+    claim_ids = main.waiting()
+    assert len(claim_ids) == 24
+    assert "CLM-1001" not in claim_ids
+    assert claim_ids[:2] == ["CLM-1002", "CLM-1003"]
+
+
+def test_working_the_queue_goes_on_after_a_failed_run(monkeypatch, capsys):
+    monkeypatch.setattr(main, "waiting", lambda: ["CLM-1001", "CLM-1002", "CLM-1003"])
+
+    def run(claim_id, thread_id):
+        if claim_id == "CLM-1002":
+            raise RuntimeError("The model is unavailable")
+        return f"Decided {claim_id}"
+
+    monkeypatch.setattr(main, "run", run)
+    main.work_the_queue()
+    assert capsys.readouterr().out == (
+        "[1/3] CLM-1001\nDecided CLM-1001\n\n"
+        "[2/3] CLM-1002\nThe run on CLM-1002 failed: The model is unavailable\n\n"
+        "[3/3] CLM-1003\nDecided CLM-1003\n\n"
+    )
+
+
+def test_working_an_empty_queue(monkeypatch, capsys):
+    monkeypatch.setattr(main, "waiting", lambda: [])
+    main.work_the_queue()
+    assert capsys.readouterr().out == "No claims are waiting.\n"
 
 
 def test_model_name(monkeypatch):

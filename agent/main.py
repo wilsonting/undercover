@@ -4,6 +4,7 @@ import json
 import os
 from collections.abc import Iterator
 from typing import Any, Literal
+from uuid import uuid4
 
 import httpx
 from dotenv import load_dotenv
@@ -166,3 +167,28 @@ def run(claim_id: str, thread_id: str, llm: BaseChatModel | None = None) -> str:
     if undecided(claim_id):
         stop(claim_id, thread_id, "The agent finished without recording a decision.")
     return reply
+
+
+def waiting() -> list[str]:
+    """The claims waiting in the queue, in queue order."""
+    with backend() as client:
+        response = client.get("/api/claims")
+        response.raise_for_status()
+    return [
+        claim["claim_id"] for claim in response.json() if claim["status"] == "waiting"
+    ]
+
+
+def work_the_queue() -> None:
+    """Run the agent on each waiting claim in turn, printing how each one went.
+    A failed run has already been recorded on its claim, so go on to the next."""
+    claim_ids = waiting()
+    if not claim_ids:
+        print("No claims are waiting.")
+    for number, claim_id in enumerate(claim_ids, start=1):
+        print(f"[{number}/{len(claim_ids)}] {claim_id}", flush=True)
+        try:
+            print(run(claim_id, str(uuid4())))
+        except Exception as error:
+            print(f"The run on {claim_id} failed: {error}")
+        print()
