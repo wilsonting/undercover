@@ -151,6 +151,14 @@ def test_the_command_line(monkeypatch, capsys):
     assert capsys.readouterr().out == "Decided CLM-1001\n"
 
 
+@pytest.mark.parametrize("args", [[], ["CLM-1001", "CLM-1002"]])
+def test_the_command_line_needs_one_claim_id(monkeypatch, args):
+    monkeypatch.setattr(main, "run", lambda claim_id, thread_id: "Should not run")
+    monkeypatch.setattr("sys.argv", ["agent", *args])
+    with pytest.raises(SystemExit, match="Usage: uv run -m agent <claim id>"):
+        runpy.run_module("agent", run_name="__main__")
+
+
 def test_model_name(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
     monkeypatch.delenv("MODEL_NAME", raising=False)
